@@ -15,7 +15,9 @@ class Categoria extends Model{
         field:'nom_categoria'
     })
     declare nomCategoria:string
-    @HasMany(()=>Producto)
-    declare producto:Producto[]
+
+
+    @HasMany(()=>Producto,{as:'productos'})
+    declare productos:Producto[]
 }
 export default Categoria

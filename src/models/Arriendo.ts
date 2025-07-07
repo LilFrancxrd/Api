@@ -2,7 +2,7 @@ import {  BelongsTo, Column, DataType, ForeignKey, Table,Model } from "sequelize
 import Producto from "./Producto";
 import Cliente from "./Cliente";
 
-@Table({tableName:'arriendos'})
+@Table({tableName:'arriendos', timestamps:true})
 class Arriendo extends Model{
     @Column({
         type:DataType.INTEGER,
@@ -15,29 +15,35 @@ class Arriendo extends Model{
 
     @Column({
         type:DataType.DATE,
+        allowNull:false,
+        defaultValue:DataType.NOW,
         field:"fecha_inicio"
     })
     declare fechaInicio:Date
 
     @Column({
         type:DataType.DATE,
+        allowNull:true,
         field:'fecha_fin'
     })
-    declare fechaFin:Date
+    declare fechaFin:Date | null;
 
 //VEHICULO    
-    
-    @Column({
-        type: DataType.STRING(20),
-        field:'tipo_vehiculo'
-    })
-    declare tipoVehiculo:string
-
 
     @Column({
         type:DataType.STRING(6),
+        allowNull:false,
+        //unique:true,
         field:'patente_vehiculo'
     })
+    declare patenteVehiculo:string
+    
+    @Column({
+        type: DataType.STRING(20),
+        allowNull:false,
+        field:'tipo_vehiculo'
+    })
+    declare tipoVehiculo:string
 
 
 //CLIENTE
@@ -59,6 +65,24 @@ class Arriendo extends Model{
     })
     declare nomCliente:string
 
+    @Column({
+        type:DataType.ENUM('activo','terminado'),
+        allowNull:false,
+        defaultValue:'activo',
+        field:'estado_arriendo'
+    })
+    declare estadoArriendo: 'activo' | 'terminado' | 'cancelado' | 'pendiente'
 
+    @Column({
+        type:DataType.DATE,
+        allowNull:true
+    })
+    declare createdAt: Date
+
+    @Column({
+        type:DataType.DATE,
+        allowNull:true
+    })
+    declare updatedAt:Date
 }
 export default Arriendo

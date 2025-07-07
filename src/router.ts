@@ -3,19 +3,20 @@ import { borrarCategoria, crearCategoria, editarCategoria, getCategoriaConCantid
 import { borrarProducto, crearProducto, editarProducto, getProductoByCodigo } from './handlers/productos'
 import { crearUsuario, login } from './handlers/usuarios'
 import { verificarToken } from './middleware/verificarToken'
+//import { newRental } from './handlers/arriendos'
 
 
 
 const router = Router()
 
 router.post('/login',login)
+router.post('/usuarios/crear',crearUsuario)
 
 //MIDDLEWARE
 
-router.use(verificarToken)
+//router.use(verificarToken)
 
 
-export default router
 
 //CATEGORIAS
 router.get('/categorias',getCategorias)
@@ -32,5 +33,9 @@ router.post('/productos',crearProducto)
 router.put('/productos/:id',editarProducto)
 router.delete('/productos/:id',borrarProducto)
 
+//USUARIO
 
-router.post('/usuarios/crear',crearUsuario)
+//ARRIENDO
+//router.post('/arriendos',newRental)
+
+export default router

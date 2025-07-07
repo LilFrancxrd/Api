@@ -2,24 +2,12 @@ import Express from 'express'
 import router from './router'
 import db from './config/db'
 import cors,{CorsOptions} from 'cors'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const server = Express()
-
-//Funcion para conectar la base de datos
-async function conectarBD(){
-    try {
-        await db.authenticate()
-        db.sync()
-        console.log('Conectado a BD exitosamente')
-    } catch (error) {
-        console.log(error)
-    }
-}
-//Inicia la funcion para conectar a la base de datos
-conectarBD()
-
-
-//Cors
+const PORT = process.env.PORT || 5000;
 
 const CorsOptions:CorsOptions={
     origin:function(origin,callback){
@@ -33,10 +21,31 @@ const CorsOptions:CorsOptions={
 
 server.use(cors(CorsOptions))
 
-//Habilita para poder crear archivos
 server.use(Express.json())
 
-//Indiica que las rutas deben comenzar por api y direccionandolas al router
 server.use('/api',router)
+
+
+//Funcion para conectar la base de datos
+async function conectarBD(){
+    try {
+        await db.authenticate()
+        console.log('Conexion a BD exitosa')
+
+        await db.sync({alter:true})
+        console.log('Modelo sincornizado con la base de datos')
+
+        server.listen(PORT, ()=>{
+            console.log(`Servidor corriendo en el puerto ${PORT}`)
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+conectarBD()
+
+
+
 
 export default server

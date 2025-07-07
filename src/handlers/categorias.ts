@@ -15,10 +15,11 @@ export const getCategoriaConCantidadProductos = async (request: Request, respons
       attributes: [
         'id_categoria',
         'nom_categoria',
-        [Sequelize.fn('COUNT', Sequelize.col('Productos.patente_vehiculo')), 'cantidadVehiculos']
+        [Sequelize.fn('COUNT', Sequelize.col('productos.patente_vehiculo')), 'cantidadVehiculos']
       ],
       include: [{
         model: Producto,
+        as:'productos',
         attributes: []
       }],
       group: ['Categoria.id_categoria','Categoria.nom_categoria'],
