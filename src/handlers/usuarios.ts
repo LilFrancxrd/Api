@@ -1,3 +1,4 @@
+
 import { Request, Response } from "express"
 import Usuario from "../models/Usuario"
 import bcrypt from 'bcrypt'
@@ -25,6 +26,14 @@ export const login = async(request:Request,response:Response)=>{
 }
 
 
+export const logout = async(request:Request , response:Response)=>{
+    try {
+        response.status(200).json({message:'Sesion cerrada'})
+    } catch (error) {
+        
+    }
+}
+
 
 export const crearUsuario = async(request:Request,response:Response)=>{
     const {email , password} = request.body
@@ -48,4 +57,53 @@ export const crearUsuario = async(request:Request,response:Response)=>{
         response.status(500).json({error:'Error'})
     }
     
+}
+
+
+export const actualizarPassword = async(request:Request , response:Response)=>{
+    const {id} = request.params
+
+    const {passActual , passNueva , passConfirmarNueva} = request.body
+
+    //Verificar campo en blanco
+    if(!passActual || !passNueva || !passConfirmarNueva){
+        response.status(400).json({error:'Los campos son obligatorios'})
+    }
+
+    //Validar que las password sean igualse
+
+    if(passNueva !== passConfirmarNueva){
+        response.status(400).json({error:'Contraseñas no coinciden'})
+    }
+
+    //Validar el minimo de caracteres
+    if(passNueva.length <6){
+        response.status(400).json({error:'Minimo 6 caracteres'})
+    }
+
+
+    try {
+        const usuario = await Usuario.findByPk(id)
+    
+        if(!usuario){
+            response.status(404).json({error:'Usuario no encontrado'})
+        }
+    
+        const passCorrecta = await bcrypt.compare(passActual , usuario.password)
+    
+        // if(!passCorrecta){
+        //     response.status(401).json({error:'La contraseña actual es incorrecta'})
+        // }
+    
+        const salt = await bcrypt.genSalt(10);
+        usuario.password = await bcrypt.hash(passNueva,salt)
+    
+        await usuario.save()
+    
+        response.status(200).json({message:'Contraseña Actualizada'})
+        
+    } catch (error) {
+        console.error('Error al registrar usuario',error)
+        response.status(500).json({error:'Error'})
+    }
 }
