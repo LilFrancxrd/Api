@@ -91,9 +91,7 @@ export const actualizarPassword = async(request:Request , response:Response)=>{
     
         const passCorrecta = await bcrypt.compare(passActual , usuario.password)
     
-        // if(!passCorrecta){
-        //     response.status(401).json({error:'La contraseña actual es incorrecta'})
-        // }
+
     
         const salt = await bcrypt.genSalt(10);
         usuario.password = await bcrypt.hash(passNueva,salt)

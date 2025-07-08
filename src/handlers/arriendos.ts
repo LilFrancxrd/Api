@@ -5,18 +5,18 @@ import Arriendo from "../models/Arriendo"
 import Usuario from "../models/Usuario"
 
 export const crearArriendo = async(request:Request , response:Response)=>{
-    const {patente_vehiculo, rut_cliente , tipo_vehiculo , nom_cliente} = request.body
+    const {patente, tipoVehiculo ,rutCliente, nomCliente} = request.body
 
-    if(!patente_vehiculo || !rut_cliente || !tipo_vehiculo || !nom_cliente){
+    if(!patente || !rutCliente || !tipoVehiculo || !nomCliente){
         response.status(400).json({error:'Campos son obligatorios'})
     }
     try {
-        const existe = await Producto.findByPk(patente_vehiculo)
-        const nuevoUsuario = await Arriendo.create(
-            {patenteVehiculo:patente_vehiculo,
-            rutCliente:rut_cliente,
-            tipoVehiculo:tipo_vehiculo,
-            nomCliente:nom_cliente})
+        const existe = await Producto.findByPk(patente)
+        const nuevoUsuario = await Arriendo.create({
+            patenteVehiculo:patente,
+            rutCliente:rutCliente,
+            tipoVehiculo:tipoVehiculo,
+            nomCliente:nomCliente})
         if(existe){
             response.status(201).json({message:'Arriendo creado'})
         }
@@ -55,13 +55,18 @@ export const registrarDevolucion = async(request:Request , response:Response)=>{
 }
 
 export const borrarArriendo =  async(request:Request , response:Response)=>{
+    const {id} = request.params
     try {
-        const {id} = request.params
         const arriendoaBorrar =  await Arriendo.findByPk(id);
+
+        
+        if(!arriendoaBorrar){
+            response.status(404).json({error:'Arriendo no encontrado'})
+        }
 
         await arriendoaBorrar.destroy(request.body)
         await arriendoaBorrar.save()
-        response.json({data:'Producto Borrado'})
+        response.json({data:'Arriendo Borrado'})
     } catch (error) {
         console.error('Error al consultar',error);
         response.status(500).json({error: error.message})
@@ -96,7 +101,7 @@ export const arriendoTerminado = async(request:Request , response:Response)=>{
             }
         })
 
-        if(arriendoTerminado.length === 0){
+        if(terminado.length === 0){
             response.status(200).json({message:"No hay arriendos terminados"})
         }
 

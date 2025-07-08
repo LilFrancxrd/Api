@@ -3,9 +3,11 @@ import { borrarCategoria, crearCategoria, editarCategoria, getCategoriaConCantid
 import { borrarProducto, crearProducto, editarProducto, getProductoByCodigo } from './handlers/productos'
 import { actualizarPassword, crearUsuario, login, logout } from './handlers/usuarios'
 import { verificarToken } from './middleware/verificarToken'
+
 import { arriendoActivo, arriendoTerminado, borrarArriendo, crearArriendo, registrarDevolucion } from './handlers/arriendos'
 import { crearCliente } from './handlers/clientes'
 //import { newRental } from './handlers/arriendos'
+
 
 
 
@@ -17,7 +19,7 @@ router.post('/usuarios/crear',crearUsuario)
 
 //MIDDLEWARE
 
-//router.use(verificarToken)
+router.use(verificarToken)
 
 
 
